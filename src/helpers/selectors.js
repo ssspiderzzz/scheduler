@@ -1,4 +1,4 @@
-export default function getAppointmentsForDay(state, day) {
+function getAppointmentsForDay(state, day) {
   let selector = [];
   let tempAppoint = [];
 
@@ -13,3 +13,19 @@ export default function getAppointmentsForDay(state, day) {
 
   return selector;
 }
+
+function getInterview(state, interview) {
+  if (interview === null) {
+    return null;
+  }
+  let selector = {};
+
+  for (let key in interview.interviewers) {
+    selector.interviewer = interview.interviewers[key];
+  }
+  selector.student = interview.student;
+
+  return selector;
+}
+
+export { getAppointmentsForDay, getInterview };

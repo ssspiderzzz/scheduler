@@ -3,13 +3,14 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "components/Appointment";
-import getAppointmentsForDay from "helpers/selectors";
+import { getAppointmentsForDay, getInterview } from "helpers/selectors";
 
 export default function Application(props) {
   const [state, setState] = useState({
     day: "Monday",
     days: [],
-    appointments: {}
+    appointments: {},
+    interviewers: {}
   });
 
   const setDay = day => setState(prev => ({ ...prev, day }));
@@ -18,32 +19,42 @@ export default function Application(props) {
     setState(prev => ({ ...prev, appointments }));
 
   useEffect(() => {
-    // Promise.all([
-    //   Promise.resolve(axios.get("/api/days")),
-    //   Promise.resolve(axios.get("/api/appointments"))
-    // ]).then(all => {
-    //   console.log(`first promise: ${all[0].data}`);
-    //   // setDays(all[0].data);
-    //   console.log(`second promise: ${all[1].data}`);
-    //   // setAppoitments(all[1].data);
-    // });
-
-    axios.get("/api/appointments").then(response => {
-      console.log(response.data);
-      setAppoitments(response.data);
+    Promise.all([
+      axios.get("http://localhost:3001/api/days"),
+      axios.get("http://localhost:3001/api/appointments"),
+      axios.get("http://localhost:3001/api/interviewers")
+    ]).then(all => {
+      setState(prev => ({
+        ...prev,
+        days: all[0].data,
+        appointments: all[1].data,
+        interviewers: all[2].data
+      }));
     });
-  }, []);
 
-  useEffect(() => {
-    axios.get("/api/days").then(response => {
-      console.log(response.data);
-      setDays(response.data);
-    });
+    //   axios.get("/api/appointments").then(response => {
+    //     console.log(response.data);
+    //     setAppoitments(response.data);
+    //   });
+    // }, []);
+
+    // useEffect(() => {
+    //   axios.get("/api/days").then(response => {
+    //     console.log(response.data);
+    //     setDays(response.data);
+    //   });
   }, []);
 
   const appointmentsEach = getAppointmentsForDay(state, state.day).map(
     appointment => {
-      return <Appointment key={appointment.id} {...appointment} />;
+      const interview = getInterview(state, appointment.interview);
+      return (
+        <Appointment
+          key={appointment.id}
+          interview={interview}
+          {...appointment}
+        />
+      );
     }
   );
 
@@ -64,10 +75,7 @@ export default function Application(props) {
           alt="Lighthouse Labs"
         />
       </section>
-      <section className="schedule">
-        {appointmentsEach}
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
-      </section>
+      <section className="schedule">{appointmentsEach}</section>
     </main>
   );
 }
