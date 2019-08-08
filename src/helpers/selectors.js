@@ -19,13 +19,28 @@ function getInterview(state, interview) {
     return null;
   }
   let selector = {};
+  let key = interview.interviewer;
 
-  for (let key in interview.interviewers) {
-    selector.interviewer = interview.interviewers[key];
-  }
+  selector.interviewer = state.interviewers[key];
   selector.student = interview.student;
 
   return selector;
 }
 
-export { getAppointmentsForDay, getInterview };
+function getInterviewersForDay(state, day) {
+  let selector = [];
+  let tempAppoint = [];
+
+  for (let days of state.days) {
+    if (days.name === day) {
+      tempAppoint = days.interviewers;
+    }
+  }
+  for (let i of tempAppoint) {
+    selector.push(state.interviewers[i]);
+  }
+
+  return selector;
+}
+
+export { getAppointmentsForDay, getInterview, getInterviewersForDay };

@@ -5,15 +5,11 @@ import InterviewerList from "../InterviewerList";
 export default function Confirm(props) {
   const [name, setName] = useState(props.name || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
-
   function reset() {
     setName("");
     setInterviewer(null);
-    console.log(`Now reset, name is: ${name}, interviewer is: ${interviewer}`);
-  }
-
-  function save() {
-    console.log(`Now save`);
+    props.onCancel();
+    console.log(`Now reset`);
   }
 
   return (
@@ -30,8 +26,8 @@ export default function Confirm(props) {
         </form>
         <InterviewerList
           interviewers={props.interviewers}
-          setInterviewer={props.setInterviewer}
-          interviewer={setInterviewer}
+          setInterviewer={setInterviewer}
+          interviewer={interviewer}
         />
       </section>
       <section className="appointment__card-right">
@@ -39,7 +35,7 @@ export default function Confirm(props) {
           <Button danger onClick={() => reset()}>
             Cancel
           </Button>
-          <Button confirm onClick={() => save()}>
+          <Button confirm onClick={() => props.onSave(name, interviewer)}>
             Save
           </Button>
         </section>
