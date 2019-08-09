@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import "./styles.scss";
 import Header from "./Header";
@@ -7,6 +7,7 @@ import Empty from "./Empty";
 import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
+import Error from "./Error";
 
 export default function Appointment(props) {
   const EMPTY = "EMPTY";
@@ -16,6 +17,8 @@ export default function Appointment(props) {
   const DELETING = "DELETING";
   const CONFIRM = "CONFIRM";
   const EDIT = "EDIT";
+  const ERROR_SAVE = "ERROR_SAVE";
+  const ERROR_DELETE = "ERROR_DELETE";
 
   let state;
   if (props.interview) {
@@ -23,6 +26,17 @@ export default function Appointment(props) {
   } else {
     state = props.useVisualMode(EMPTY);
   }
+
+  useEffect(() => {
+    console.log(`inhererehrehrehrehrherehrhe`);
+    if (state.interview && state.mode === EMPTY) {
+      state.transition(SHOW);
+    }
+    if (state.interview === null && state.mode === SHOW) {
+      state.transition(EMPTY);
+    }
+  }, [state.interview, state.transition, state.mode]);
+
   const onAdd = () => {
     state.transition(CREATE);
   };
@@ -35,11 +49,17 @@ export default function Appointment(props) {
       interviewer
     };
     state.transition(SAVING);
-    props.bookInterview(props.id, interview).then(() => state.transition(SHOW));
+    props
+      .bookInterview(props.id, interview)
+      .then(() => state.transition(SHOW))
+      .catch(error => state.transition(ERROR_SAVE, true));
   };
   const onDelete = () => {
-    state.transition(DELETING);
-    props.deleteInterview(props.id).then(() => state.transition(EMPTY));
+    state.transition(DELETING, true);
+    props
+      .deleteInterview(props.id)
+      .then(() => state.transition(EMPTY))
+      .catch(error => state.transition(ERROR_DELETE, true));
   };
   const onConfirm = () => {
     state.transition(CONFIRM);
@@ -83,6 +103,12 @@ export default function Appointment(props) {
           onSave={onSave}
           bookInterview={props.bookInterview}
         />
+      )}
+      {state.mode === ERROR_SAVE && (
+        <Error status={"Could not save appointment"} onCancel={onCancel} />
+      )}
+      {state.mode === ERROR_DELETE && (
+        <Error status={"Could not delete appointment"} onCancel={onCancel} />
       )}
     </div>
   );
