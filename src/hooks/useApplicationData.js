@@ -37,9 +37,6 @@ export default function useApplicationData(props) {
         };
       }
       case SET_INTERVIEW: {
-        console.log(action);
-        console.log(`herer`);
-
         return {
           ...state,
           appointments: {

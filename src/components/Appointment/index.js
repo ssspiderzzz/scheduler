@@ -28,7 +28,6 @@ export default function Appointment(props) {
   }
 
   useEffect(() => {
-    console.log(`inhererehrehrehrehrherehrhe`);
     if (state.interview && state.mode === EMPTY) {
       state.transition(SHOW);
     }
