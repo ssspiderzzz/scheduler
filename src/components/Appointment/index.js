@@ -28,13 +28,13 @@ export default function Appointment(props) {
   }
 
   useEffect(() => {
-    if (state.interview && state.mode === EMPTY) {
+    if (props.interview && state.mode === EMPTY) {
       state.transition(SHOW);
     }
-    if (state.interview === null && state.mode === SHOW) {
+    if (props.interview === null && state.mode === SHOW) {
       state.transition(EMPTY);
     }
-  }, [state.interview, state.transition, state.mode]);
+  }, [state, props.interview, state.transition, state.mode]);
 
   const onAdd = () => {
     state.transition(CREATE);
@@ -71,13 +71,18 @@ export default function Appointment(props) {
     <div>
       <Header key={props.id} time={props.time} />
       {state.mode === EMPTY && <Empty onAdd={onAdd} />}
-      {state.mode === SHOW && (
-        <Show
-          student={props.interviewChanged.student}
-          interviewer={props.interviewChanged.interviewer}
-          onConfirm={onConfirm}
-          onEdit={onEdit}
-        />
+      {state.mode === SHOW &&
+        props.interviewChanged !== null &&
+        props.interviewChanged.interviewer && (
+          <Show
+            student={props.interviewChanged.student}
+            interviewer={props.interviewChanged.interviewer}
+            onConfirm={onConfirm}
+            onEdit={onEdit}
+          />
+        )}
+      {state.mode === SHOW && props.interviewChanged === null && (
+        <Empty onAdd={onAdd} />
       )}
       {state.mode === CREATE && (
         <Form

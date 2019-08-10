@@ -42,6 +42,7 @@ export default function useApplicationData(props) {
           appointments: {
             ...state.appointments,
             [action.id]: {
+              ...state.appointments[action.id],
               interview: action.interview
             }
           }
