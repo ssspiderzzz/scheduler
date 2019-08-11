@@ -69,7 +69,7 @@ export default function Appointment(props) {
 
   return (
     <div>
-      <Header key={props.id} time={props.time} />
+      <Header time={props.time} />
       {state.mode === EMPTY && <Empty onAdd={onAdd} />}
       {state.mode === SHOW &&
         props.interviewChanged !== null &&

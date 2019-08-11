@@ -14,7 +14,9 @@ export default function DayListItem(props) {
       onClick={() => props.setDay(props.name)}
     >
       <h2>{props.name}</h2>
-      <h4>{props.spots} spots remaining</h4>
+      {props.spots > 1 && <h4>{props.spots} spots remaining</h4>}
+      {props.spots === 1 && <h4>{props.spots} spot remaining</h4>}
+      {props.spots === 0 && <h4>no spots remaining</h4>}
     </article>
   );
 }

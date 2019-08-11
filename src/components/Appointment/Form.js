@@ -9,7 +9,6 @@ export default function Confirm(props) {
     setName("");
     setInterviewer(null);
     props.onCancel();
-    console.log(`Now reset`);
   }
 
   return (
