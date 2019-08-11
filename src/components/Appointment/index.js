@@ -8,6 +8,7 @@ import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
 import Error from "./Error";
+import useVisualMode from "hooks/useVisualMode";
 
 export default function Appointment(props) {
   const EMPTY = "EMPTY";
@@ -20,58 +21,55 @@ export default function Appointment(props) {
   const ERROR_SAVE = "ERROR_SAVE";
   const ERROR_DELETE = "ERROR_DELETE";
 
-  let state;
-  if (props.interview) {
-    state = props.useVisualMode(SHOW);
-  } else {
-    state = props.useVisualMode(EMPTY);
-  }
+  const { mode, transition, back } = useVisualMode(
+    props.interview ? SHOW : EMPTY
+  );
 
   useEffect(() => {
-    if (props.interview && state.mode === EMPTY) {
-      state.transition(SHOW);
+    if (props.interview && mode === EMPTY) {
+      transition(SHOW);
     }
-    if (props.interview === null && state.mode === SHOW) {
-      state.transition(EMPTY);
+    if (props.interview === null && mode === SHOW) {
+      transition(EMPTY);
     }
-  }, [state, props.interview, state.transition, state.mode]);
+  }, [props.interview, transition, mode]);
 
   const onAdd = () => {
-    state.transition(CREATE);
+    transition(CREATE);
   };
   const onCancel = () => {
-    state.back();
+    back();
   };
   const onSave = (name, interviewer) => {
     const interview = {
       student: name,
       interviewer
     };
-    state.transition(SAVING);
+    transition(SAVING);
     props
       .bookInterview(props.id, interview)
-      .then(() => state.transition(SHOW))
-      .catch(error => state.transition(ERROR_SAVE, true));
+      .then(() => transition(SHOW))
+      .catch(error => transition(ERROR_SAVE, true));
   };
   const onDelete = () => {
-    state.transition(DELETING, true);
+    transition(DELETING, true);
     props
       .deleteInterview(props.id)
-      .then(() => state.transition(EMPTY))
-      .catch(error => state.transition(ERROR_DELETE, true));
+      .then(() => transition(EMPTY))
+      .catch(error => transition(ERROR_DELETE, true));
   };
   const onConfirm = () => {
-    state.transition(CONFIRM);
+    transition(CONFIRM);
   };
   const onEdit = () => {
-    state.transition(EDIT);
+    transition(EDIT);
   };
 
   return (
     <div>
       <Header time={props.time} />
-      {state.mode === EMPTY && <Empty onAdd={onAdd} />}
-      {state.mode === SHOW &&
+      {mode === EMPTY && <Empty onAdd={onAdd} />}
+      {mode === SHOW &&
         props.interviewChanged !== null &&
         props.interviewChanged.interviewer && (
           <Show
@@ -81,10 +79,7 @@ export default function Appointment(props) {
             onEdit={onEdit}
           />
         )}
-      {state.mode === SHOW && props.interviewChanged === null && (
-        <Empty onAdd={onAdd} />
-      )}
-      {state.mode === CREATE && (
+      {mode === CREATE && (
         <Form
           name={""}
           interviewers={props.InterviewersForDay}
@@ -93,12 +88,10 @@ export default function Appointment(props) {
           bookInterview={props.bookInterview}
         />
       )}
-      {state.mode === SAVING && <Status status={"Saving"} />}
-      {state.mode === DELETING && <Status status={"Deleting"} />}
-      {state.mode === CONFIRM && (
-        <Confirm onCancel={onCancel} onDelete={onDelete} />
-      )}
-      {state.mode === EDIT && (
+      {mode === SAVING && <Status status={"Saving"} />}
+      {mode === DELETING && <Status status={"Deleting"} />}
+      {mode === CONFIRM && <Confirm onCancel={onCancel} onDelete={onDelete} />}
+      {mode === EDIT && (
         <Form
           name={props.interviewChanged.student}
           interviewer={props.interview.interviewer}
@@ -108,10 +101,10 @@ export default function Appointment(props) {
           bookInterview={props.bookInterview}
         />
       )}
-      {state.mode === ERROR_SAVE && (
+      {mode === ERROR_SAVE && (
         <Error status={"Could not save appointment"} onCancel={onCancel} />
       )}
-      {state.mode === ERROR_DELETE && (
+      {mode === ERROR_DELETE && (
         <Error status={"Could not delete appointment"} onCancel={onCancel} />
       )}
     </div>

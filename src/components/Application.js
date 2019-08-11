@@ -7,7 +7,6 @@ import {
   getInterview,
   getInterviewersForDay
 } from "helpers/selectors";
-import useVisualMode from "hooks/useVisualMode";
 import useApplicationData from "hooks/useApplicationData";
 
 export default function Application(props) {
@@ -29,7 +28,6 @@ export default function Application(props) {
           key={appointment.id}
           interviewChanged={interview}
           InterviewersForDay={InterviewersForDay}
-          useVisualMode={useVisualMode}
           bookInterview={bookInterview}
           deleteInterview={deleteInterview}
         />

@@ -5,6 +5,7 @@ import InterviewerList from "../InterviewerList";
 export default function Confirm(props) {
   const [name, setName] = useState(props.name || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
+
   function reset() {
     setName("");
     setInterviewer(null);
@@ -34,7 +35,11 @@ export default function Confirm(props) {
           <Button danger onClick={() => reset()}>
             Cancel
           </Button>
-          <Button confirm onClick={() => props.onSave(name, interviewer)}>
+          <Button
+            confirm
+            disabled={!name || !interviewer}
+            onClick={() => props.onSave(name, interviewer)}
+          >
             Save
           </Button>
         </section>
