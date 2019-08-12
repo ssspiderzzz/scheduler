@@ -5,7 +5,16 @@ import InterviewerList from "../InterviewerList";
 export default function Confirm(props) {
   const [name, setName] = useState(props.name || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
+  const [error, setError] = useState("");
 
+  function validate() {
+    if (name === "") {
+      setError("Student name cannot be blank");
+      return;
+    }
+
+    props.onSave(name, interviewer);
+  }
   function reset() {
     setName("");
     setInterviewer(null);
@@ -17,6 +26,7 @@ export default function Confirm(props) {
       <section className="appointment__card-left">
         <form autoComplete="off" onSubmit={event => event.preventDefault()}>
           <input
+            data-testid="student-name-input"
             className="appointment__create-input text--semi-bold"
             value={name}
             onChange={event => setName(event.target.value)}
@@ -24,10 +34,11 @@ export default function Confirm(props) {
             placeholder="Enter Student Name"
           />
         </form>
+        <p>{error}</p>
         <InterviewerList
           interviewers={props.interviewers}
-          setInterviewer={setInterviewer}
-          interviewer={interviewer}
+          onChange={setInterviewer}
+          value={interviewer}
         />
       </section>
       <section className="appointment__card-right">
@@ -37,8 +48,8 @@ export default function Confirm(props) {
           </Button>
           <Button
             confirm
-            disabled={!name || !interviewer}
-            onClick={() => props.onSave(name, interviewer)}
+            // disabled={!name || !interviewer}
+            onClick={() => validate()}
           >
             Save
           </Button>

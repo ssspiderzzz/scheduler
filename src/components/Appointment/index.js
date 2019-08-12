@@ -69,16 +69,14 @@ export default function Appointment(props) {
     <div>
       <Header time={props.time} />
       {mode === EMPTY && <Empty onAdd={onAdd} />}
-      {mode === SHOW &&
-        props.interviewChanged !== null &&
-        props.interviewChanged.interviewer && (
-          <Show
-            student={props.interviewChanged.student}
-            interviewer={props.interviewChanged.interviewer}
-            onConfirm={onConfirm}
-            onEdit={onEdit}
-          />
-        )}
+      {mode === SHOW && props.interviewChanged !== null && (
+        <Show
+          student={props.interviewChanged.student}
+          interviewer={props.interviewChanged.interviewer}
+          onConfirm={onConfirm}
+          onEdit={onEdit}
+        />
+      )}
       {mode === CREATE && (
         <Form
           name={""}
