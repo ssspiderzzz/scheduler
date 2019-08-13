@@ -30,6 +30,7 @@ export default function Application(props) {
           InterviewersForDay={InterviewersForDay}
           bookInterview={bookInterview}
           deleteInterview={deleteInterview}
+          day={state.day}
         />
       );
     }

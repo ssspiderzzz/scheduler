@@ -12,7 +12,7 @@ export default function InterviewerListItem(props) {
       <img
         className="interviewers__item-image"
         src={props.avatar}
-        alt={props.id}
+        alt={props.name}
         onClick={() => props.onChange(props.id)}
       />
       {props.selected && props.name}

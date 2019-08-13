@@ -11,6 +11,8 @@ export default function Confirm(props) {
     if (name === "") {
       setError("Student name cannot be blank");
       return;
+    } else {
+      setError("");
     }
 
     props.onSave(name, interviewer);
@@ -46,11 +48,7 @@ export default function Confirm(props) {
           <Button danger onClick={() => reset()}>
             Cancel
           </Button>
-          <Button
-            confirm
-            // disabled={!name || !interviewer}
-            onClick={() => validate()}
-          >
+          <Button confirm onClick={() => validate()}>
             Save
           </Button>
         </section>

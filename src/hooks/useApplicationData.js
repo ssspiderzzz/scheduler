@@ -1,3 +1,4 @@
+import { getAppointmentsForDay, getDayId, getSpots } from "helpers/selectors";
 import { useEffect, useReducer } from "react";
 import axios from "axios";
 const wss = new WebSocket("ws://localhost:3001");
@@ -30,9 +31,19 @@ export default function useApplicationData(props) {
           interviewers: action.interviewers
         };
       case SET_INTERVIEW_DAYS: {
+        const nowState = state;
+        nowState.appointments = action.appointments;
+        const dayID = getDayId(action.day);
+        const nowAppointments = getAppointmentsForDay(nowState, action.day);
+        const nowSpots = getSpots(nowAppointments);
+        const nowDay = state.days[dayID];
+        nowDay.spots = nowSpots;
+        const nowDays = state.days;
+        nowDays[dayID] = nowDay;
+
         return {
           ...state,
-          days: action.days,
+          days: nowDays,
           appointments: action.appointments
         };
       }
@@ -84,37 +95,30 @@ export default function useApplicationData(props) {
     };
   });
 
-  function bookInterview(id, interview) {
-    return axios
-      .put(`http://localhost:3001/api/appointments/${id}`, { interview })
-      .then(r =>
-        Promise.all([
-          axios.get("/api/appointments"),
-          axios.get("/api/days")
-        ]).then(all => {
+  function bookInterview(id, interview, day) {
+    return axios.put(`/api/appointments/${id}`, { interview }).then(r =>
+      Promise.all([axios.get("/api/appointments")]).then(all => {
+        dispatch({
+          type: SET_INTERVIEW_DAYS,
+          appointments: all[0].data,
+          day: day
+        });
+      })
+    );
+  }
+
+  function deleteInterview(id, day) {
+    return axios.delete(`/api/appointments/${id}`).then(r =>
+      Promise.all([axios.get("/api/appointments")])
+        .then(all => {
           dispatch({
             type: SET_INTERVIEW_DAYS,
             appointments: all[0].data,
-            days: all[1].data
+            day: day
           });
         })
-      );
-  }
-
-  function deleteInterview(id) {
-    return axios
-      .delete(`http://localhost:3001/api/appointments/${id}`)
-      .then(r =>
-        Promise.all([axios.get("/api/appointments"), axios.get("/api/days")])
-          .then(all => {
-            dispatch({
-              type: SET_INTERVIEW_DAYS,
-              appointments: all[0].data,
-              days: all[1].data
-            });
-          })
-          .catch(error => console.log(error))
-      );
+        .catch(error => console.log(error))
+    );
   }
 
   return {

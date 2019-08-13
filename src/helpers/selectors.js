@@ -43,4 +43,42 @@ function getInterviewersForDay(state, day) {
   return selector;
 }
 
-export { getAppointmentsForDay, getInterview, getInterviewersForDay };
+function getDayId(day) {
+  switch (day) {
+    case "Monday": {
+      return 0;
+    }
+    case "Tuesday": {
+      return 1;
+    }
+    case "Wednesday": {
+      return 2;
+    }
+    case "Thursday": {
+      return 3;
+    }
+    case "Friday": {
+      return 4;
+    }
+    default:
+      throw new Error(`Tried to reduce with unsupported action type: ${day}`);
+  }
+}
+
+function getSpots(appointments) {
+  let spots = 0;
+  for (let i of appointments) {
+    if (i.interview === null) {
+      spots += 1;
+    }
+  }
+  return spots;
+}
+
+export {
+  getAppointmentsForDay,
+  getInterview,
+  getInterviewersForDay,
+  getDayId,
+  getSpots
+};
