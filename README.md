@@ -8,11 +8,10 @@ Jest tests are used through the development of the project.
 
 # Technical Specifications
 
-React
-Webpack, Babel
-Axios, WebSockets
-Axios
-Storybook, Webpack Dev Server, Jest, Testing Library
+- React
+- Webpack, Babel
+- Axios, WebSockets
+- Storybook, Webpack Dev Server, Jest, Testing Library
 
 The Scheduler client application created using Create React App. Express is the basis for the Scheduler API server application.
 
@@ -45,3 +44,7 @@ npm test
 ```sh
 npm run storybook
 ```
+
+## Screenshot
+
+!["Screenshot for Interview Scheduler"](https://github.com/ssspiderzzz/scheduler/blob/master/public/images/screenshot/screencapture-localhost-3000.png)
