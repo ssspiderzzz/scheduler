@@ -5,7 +5,7 @@ import reducer, {
 } from "reducers/application";
 import { useEffect, useReducer } from "react";
 import axios from "axios";
-const wss = new WebSocket("ws://localhost:3001");
+const wss = new WebSocket("wss://scheduler-lhl-spider.herokuapp.com/");
 
 export default function useApplicationData(props) {
   const [state, dispatch] = useReducer(reducer, {
